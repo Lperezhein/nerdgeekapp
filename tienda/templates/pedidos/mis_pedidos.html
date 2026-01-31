@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Pedidos - NerdGeek</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <img src="{% static 'tienda/logo.png' %}" alt="Logo" width="30" height="30" class="d-inline-block align-text-top me-2">
+                NerdGeek
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link active" href="{% url 'mis_pedidos' %}">Mis Pedidos</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2 class="mb-4">Mis Pedidos</h2>
+        <div class="list-group">
+            {% for pedido in pedidos %}
+            <a href="{% url 'detalle_pedido' pedido.id %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Pedido #{{ pedido.id }} - {{ pedido.producto.nombre }}</h5>
+                    </div>
+                    <p class="mb-1 text-muted">Fecha: {{ pedido.fecha_creacion|date:"d/m/Y" }}</p>
+                    <small class="text-primary">
+                        {% if pedido.mensajes.count > 0 %}
+                            {{ pedido.mensajes.count }} mensajes en el chat
+                        {% else %}
+                            Sin mensajes
+                        {% endif %}
+                    </small>
+                </div>
+                <span class="badge bg-secondary rounded-pill">{{ pedido.get_estado_display }}</span>
+            </a>
+            {% empty %}
+            <div class="text-center py-5">
+                <p class="lead">Aún no has realizado pedidos.</p>
+                <a href="{% url 'home' %}" class="btn btn-primary">Ir a la tienda</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
