@@ -21,6 +21,9 @@
                 NerdGeek
             </a>
             <div class="navbar-nav ms-auto">
+                {% if request.user.is_authenticated %}
+                <span class="navbar-text me-3">Hola, {{ request.user.username }}</span>
+                {% endif %}
                 <a class="nav-link" href="{% url 'mis_pedidos' %}">Volver a Mis Pedidos</a>
             </div>
         </div>
@@ -41,6 +44,16 @@
                         <hr>
                         <h6>Tu imagen subida:</h6>
                         <img src="{{ pedido.imagen_cliente.url }}" class="img-fluid rounded border" alt="Imagen cliente">
+                        {% endif %}
+
+                        {% if request.user.is_superuser %}
+                        <hr>
+                        <h6 class="text-danger">Administrar Estado:</h6>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'cambiar_estado' pedido.id 'diseno' %}" class="btn btn-outline-warning btn-sm">En Diseño / Conversación</a>
+                            <a href="{% url 'cambiar_estado' pedido.id 'impresion' %}" class="btn btn-outline-secondary btn-sm">Pasar a Fabricación (Impresión)</a>
+                            <a href="{% url 'cambiar_estado' pedido.id 'listo' %}" class="btn btn-outline-success btn-sm">Marcar como Listo</a>
+                        </div>
                         {% endif %}
                     </div>
                 </div>

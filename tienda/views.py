@@ -175,3 +175,34 @@ def enviar_mensaje(request, pk):
             return redirect('detalle_pedido', pk=pk)
             
     return redirect('detalle_pedido', pk=pk)
+
+def cambiar_estado_pedido(request, pk, nuevo_estado):
+    """
+    Permite al administrador cambiar el estado del pedido manualmente.
+    """
+    if not request.user.is_superuser:
+        return redirect('home')
+    
+    pedido = get_object_or_404(Pedido, pk=pk)
+    if nuevo_estado in dict(Pedido.ESTADO_CHOICES):
+        pedido.estado = nuevo_estado
+        pedido.save()
+        
+        # 1. Dejar registro automático en el chat (para que quede en el historial)
+        MensajeChat.objects.create(
+            pedido=pedido,
+            emisor=request.user,
+            contenido=f"*** ACTUALIZACIÓN DE SISTEMA: El pedido pasó a estado {pedido.get_estado_display().upper()} ***"
+        )
+
+        # 2. Enviar correo electrónico al cliente
+        asunto = f"NerdGeek: Actualización de Pedido #{pedido.id}"
+        mensaje = f"Hola {pedido.usuario.username},\n\nTu pedido ha cambiado de estado a: {pedido.get_estado_display()}.\n\nIngresa aquí para ver los detalles o chatear con nosotros:\n{request.build_absolute_uri(reverse('detalle_pedido', args=[pk]))}"
+        
+        try:
+            email = EmailMessage(asunto, mensaje, to=[pedido.usuario.email])
+            email.send()
+        except Exception as e:
+            print(f"Error enviando notificación de correo: {e}")
+    
+    return redirect('detalle_pedido', pk=pk)

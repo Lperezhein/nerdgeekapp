@@ -21,4 +21,7 @@ urlpatterns = [
     
     # Ruta oculta para procesar el envío de mensajes
     path('pedido/<int:pk>/enviar/', views.enviar_mensaje, name='enviar_mensaje'),
+
+    # Ruta para cambiar el estado (Solo Admin)
+    path('pedido/<int:pk>/cambiar-estado/<str:nuevo_estado>/', views.cambiar_estado_pedido, name='cambiar_estado'),
 ]
