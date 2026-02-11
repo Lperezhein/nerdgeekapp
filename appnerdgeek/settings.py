@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'tienda',
+    
 ]
 
 MIDDLEWARE = [
@@ -111,6 +113,19 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+# En settings.py
+#USE_L10N = False
+#USE_THOUSAND_SEPARATOR = True
+#THOUSAND_SEPARATOR = '.'
+#DECIMAL_SEPARATOR = ','
+#NUMBER_GROUPING = 3
+# En settings.py
+USE_L10N = False
+USE_THOUSAND_SEPARATOR = True
+THOUSAND_SEPARATOR = '.'
+DECIMAL_SEPARATOR = ','
+NUMBER_GROUPING = 3
 
 
 # Static files (CSS, JavaScript, Images)

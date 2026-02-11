@@ -23,6 +23,9 @@ def home(request):
     productos = Producto.objects.all()
     return render(request, 'tienda/home.html', {'productos': productos})
 
+def nosotros(request):
+    return render(request, 'tienda/nosotros.html')
+
 # --- VISTA DE REGISTRO ---
 def registro(request):
     if request.method == 'POST':
