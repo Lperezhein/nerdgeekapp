@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Ejemplos de {{ tipo }}</h2>
+    <div class="row">
+        {% for ejemplo in ejemplos %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <img src="{{ ejemplo.imagen.url }}" class="card-img-top img-fluid" 
+                     style="height: 300px; object-fit: cover;" alt="Ejemplo">
+                {% if ejemplo.descripcion %}
+                <div class="card-body">
+                    <p class="card-text text-muted">{{ ejemplo.descripcion }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center">No hay ejemplos disponibles para este tipo por ahora.</p>
+        {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+        <a href="{% url 'home' %}" class="btn btn-secondary">Volver al inicio</a>
+    </div>
+</div>
+{% endblock %}

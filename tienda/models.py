@@ -43,7 +43,16 @@ class MensajeChat(models.Model):
 
     class Meta:
         ordering = ['timestamp']
-    
+
     def __str__(self):
         return f"Mensaje de {self.emisor} en Pedido #{self.pedido.id}"
 
+class Ejemplo(models.Model):
+    # Aquí hacemos la conexión. On_delete asegura que si borras el producto,
+    # se borren sus fotos de ejemplo.
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE, related_name='ejemplos')
+    imagen = models.ImageField(upload_to='ejemplos/')
+    descripcion = models.TextField(blank=True, null=True, help_text="Opcional: Breve descripción de este ejemplo")
+
+    def __str__(self):
+        return f"Ejemplo de {self.producto.nombre} ({self.id})"

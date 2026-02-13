@@ -1,5 +1,31 @@
-Hola {{ user.username }},
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .button {
+            background-color: #0d6efd;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h2>¡Hola, {{ user.username }}!</h2>
+    <p>Gracias por registrarte en <strong>NerdGeek</strong>. Para activar tu cuenta y comenzar a comprar, por favor confirma tu dirección de correo electrónico haciendo clic en el siguiente botón:</p>
 
-Por favor da clic en el siguiente enlace para confirmar tu registro y activar tu cuenta:
+    <p>
+        <a href="http://{{ domain }}{% url 'activate' uidb64=uid token=token %}" class="button" style="color: white;">
+            Activar mi cuenta
+        </a>
+    </p>
 
-http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+    <p>Si el botón no funciona, también puedes copiar y pegar el siguiente enlace en tu navegador:</p>
+    <p>http://{{ domain }}{% url 'activate' uidb64=uid token=token %}</p>
+
+    <hr>
+    <p><small>Si no creaste una cuenta en nuestro sitio, puedes ignorar este mensaje.</small></p>
+</body>
+</html>

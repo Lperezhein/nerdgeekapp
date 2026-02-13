@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'tienda',
-    
+
 ]
 
 MIDDLEWARE = [
@@ -127,6 +127,9 @@ THOUSAND_SEPARATOR = '.'
 DECIMAL_SEPARATOR = ','
 NUMBER_GROUPING = 3
 
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
@@ -142,4 +145,13 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 # En settings.py
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'lperezhein@gmail.com'
+EMAIL_HOST_PASSWORD = 'pefs wqbc payz yner' # <--- AQUÍ LAS 16 LETRAS DE GOOGLE
+DEFAULT_FROM_EMAIL = 'NerdGeek <lperezhein@gmail.com>'
+

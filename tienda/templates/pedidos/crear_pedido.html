@@ -12,7 +12,7 @@
     <nav class="navbar navbar-dark bg-dark mb-4">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home' %}">
-                <img src="{% static 'tienda/logo.png' %}" alt="Logo" width="30" height="30" class="d-inline-block align-text-top me-2">
+                <img src="{% static 'tienda Logo.png' %}" alt="Logo" width="30" height="30" class="d-inline-block align-text-top me-2">
                 NerdGeek
             </a>
         </div>
@@ -30,7 +30,7 @@
                             <strong>Precio Base:</strong> ${{ producto.precio_base }} <br>
                             <small>{{ producto.descripcion }}</small>
                         </div>
-                        
+
                         <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             {{ form.as_p }}

@@ -4,16 +4,13 @@
 
 {% block content %}
 <div class="row">
-    <!-- Sidebar (Columna Izquierda) -->
     <div class="col-lg-3 mb-4">
-        <!-- Widget Logo -->
         <div class="card mb-3 shadow-sm border-0">
             <div class="card-body text-center">
-                <img src="{% static 'tienda/logo.png' %}" class="img-fluid" alt="Logo NerdGeek">
+                <img src="{% static 'tienda/Logo.png' %}" class="img-fluid" alt="Logo NerdGeek">
             </div>
         </div>
 
-        <!-- Widget Fecha -->
         <div class="card mb-3 shadow-sm border-0">
             <div class="card-body text-center bg-primary text-white rounded">
                 <h3 class="display-4 fw-bold">{% now "d" %}</h3>
@@ -21,33 +18,29 @@
             </div>
         </div>
 
-        <!-- Widget Novedades -->
         <div class="card mb-3 shadow-sm">
             <div class="card-header bg-white fw-bold"><i class="fa-solid fa-bullhorn me-2 text-info"></i>Novedades</div>
             <div class="list-group list-group-flush">
                 <a href="#" class="list-group-item list-group-item-action small">🚀 Nuevos diseños de Anime</a>
                 <a href="#" class="list-group-item list-group-item-action small">🧢 Gorras personalizadas disponibles</a>
-                <a href="#" class="list-group-item list-group-item-action small">📦 Envíos a todo el país</a>
+                <a href="#" class="list-group-item list-group-item-action small">📦 Envíos a convenir</a>
             </div>
         </div>
 
-        <!-- Widget Oferta -->
         <div class="card bg-warning text-dark shadow-sm border-0">
             <div class="card-body text-center">
                 <h5 class="card-title"><i class="fa-solid fa-tag me-2"></i>¡Oferta Flash!</h5>
-                <p class="card-text small">¡Lleva 3 poleras y paga 2! Solo por esta semana.</p>
-                <a href="#" class="btn btn-dark btn-sm">Ver más</a>
+                <p class="card-text small">¡Lleva 3 tazones y paga 2! Solo por esta semana.</p>
+                <a href="#" class="btn btn-dark btn-sm">Comunícate al whatsapp</a>
             </div>
         </div>
     </div>
 
-    <!-- Contenido Principal (Productos) -->
     <div class="col-lg-9">
-        <!-- Banner de Bienvenida -->
         <div class="p-4 p-md-5 mb-4 rounded text-bg-dark" style="background: linear-gradient(45deg, #212529, #434343);">
             <div class="col-md-8 px-0">
                 <h1 class="display-6 fst-italic">Bienvenido a NerdGeek</h1>
-                <p class="lead my-3">Transformamos tus ideas en productos únicos. Calidad, rapidez y estilo friki.</p>
+                <p class="lead my-3">Transformamos tus ideas en productos únicos. Calidad, rapidez y estilo friki. Regístrate para una mejor atención</p>
             </div>
         </div>
 
@@ -56,13 +49,23 @@
             {% for producto in productos %}
             <div class="col">
                 <div class="card h-100 shadow-sm border-0">
-                    <img src="{{ producto.imagen_referencia.url }}" class="card-img-top" alt="{{ producto.nombre }}" style="height: 200px; object-fit: cover;">
+                    
+                    <a href="{% url 'galeria_ejemplos' producto.nombre %}" title="Ver ejemplos de {{ producto.nombre }}">
+                        <img src="{{ producto.imagen_referencia.url }}" class="card-img-top" alt="{{ producto.nombre }}" style="height: 200px; object-fit: cover; cursor: pointer;">
+                    </a>
+                    
                     <div class="card-body">
                         <h5 class="card-title">{{ producto.nombre }}</h5>
                         <p class="card-text text-muted small">{{ producto.descripcion|truncatechars:80 }}</p>
                         <div class="d-flex justify-content-between align-items-center mt-3">
                             <span class="h5 mb-0 text-primary">${{ producto.precio_base|floatformat:0|intcomma }}</span>
                             <a href="{% url 'crear_pedido' producto.id %}" class="btn btn-outline-primary btn-sm">Personalizar</a>
+                        </div>
+                        
+                        <div class="mt-2 text-center">
+                            <a href="{% url 'galeria_ejemplos' producto.nombre %}" class="text-decoration-none small text-secondary">
+                                <i class="fa-solid fa-images me-1"></i>Ver muestras
+                            </a>
                         </div>
                     </div>
                 </div>

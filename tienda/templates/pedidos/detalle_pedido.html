@@ -21,7 +21,7 @@
                         <h5 class="card-title">{{ pedido.producto.nombre }}</h5>
                         <p class="card-text"><strong>Estado:</strong> <span class="badge bg-info">{{ pedido.get_estado_display }}</span></p>
                         <p class="card-text"><strong>Instrucciones:</strong> {{ pedido.instrucciones }}</p>
-                        
+
                         {% if pedido.imagen_cliente %}
                         <hr>
                         <h6>Tu imagen subida:</h6>
@@ -46,7 +46,7 @@
                 <div class="card h-100">
                     <div class="card-header bg-success text-white">{% if request.user.is_superuser %}Chat con el Cliente{% else %}Chat con el Vendedor{% endif %}</div>
                     <div class="card-body d-flex flex-column">
-                        
+
                         <!-- Área de mensajes -->
                         <div class="chat-container p-3 mb-3 border rounded flex-grow-1" id="chat-box">
                             {% for mensaje in mensajes %}

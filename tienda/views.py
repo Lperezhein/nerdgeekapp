@@ -15,6 +15,8 @@ from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.models import User
 import urllib.request
 import urllib.parse
+from django.contrib import messages
+from .models import Ejemplo
 
 from .models import Producto, Pedido, MensajeChat
 from .forms import PedidoForm, MensajeChatForm, RegistroUsuarioForm
@@ -34,7 +36,7 @@ def registro(request):
             user = form.save(commit=False)
             user.is_active = False  # Desactivar cuenta hasta verificar
             user.save()
-            
+
             # Lógica de envío de correo
             current_site = get_current_site(request)
             mail_subject = 'Activa tu cuenta en Nerdgeek'
@@ -45,14 +47,21 @@ def registro(request):
                 'token': default_token_generator.make_token(user),
             })
             to_email = form.cleaned_data.get('email')
-            email = EmailMessage(mail_subject, message, to=[to_email])
+            from_email = 'lperezhein@gmail.com'
+            email = EmailMessage(mail_subject, message,from_email, to=[to_email])
+
+            # --- AGREGA ESTA LÍNEA AQUÍ ---
+            email.content_subtype = "html"
+            # ------------------------------
+
             try:
                 email.send()
             except Exception as e:
-                user.delete()  # Revertimos el registro si falla el correo
-                return HttpResponse(f'<h3>Error al enviar el correo.</h3><p>No se pudo establecer conexión con el servidor de correo. Por favor verifica la configuración. <br>Error: {e}</p>')
-            
-            return HttpResponse('<h3>Registro casi completo.</h3><p>Por favor confirma tu correo electrónico para activar tu cuenta.</p>')
+                user.delete()
+                return HttpResponse(f'Error: {e}')
+
+            return render(request, 'registration/registro_exitoso.html', {'email': to_email})
+
     else:
         form = RegistroUsuarioForm()
     return render(request, 'registration/registro.html', {'form': form})
@@ -63,11 +72,12 @@ def activate(request, uidb64, token):
         user = User.objects.get(pk=uid)
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
-    
+
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
         user.save()
         login(request, user)
+        messages.success(request, "¡Cuenta activada con éxito! Bienvenido a NerdGeek.") # Opcional
         return redirect('home')
     else:
         return HttpResponse('El link de activación es inválido o ha expirado.')
@@ -143,7 +153,7 @@ def enviar_mensaje(request, pk):
         pedido = get_object_or_404(Pedido, pk=pk)
     else:
         pedido = get_object_or_404(Pedido, pk=pk, usuario=request.user)
-    
+
     if request.method == 'POST':
         form = MensajeChatForm(request.POST)
         if form.is_valid():
@@ -151,7 +161,7 @@ def enviar_mensaje(request, pk):
             mensaje.pedido = pedido
             mensaje.emisor = request.user
             mensaje.save()
-            
+
             # --- NOTIFICACIÓN WHATSAPP AL ADMIN ---
             # Si escribe el cliente (no es superuser), avisar al dueño de la tienda
             if not request.user.is_superuser:
@@ -164,7 +174,7 @@ def enviar_mensaje(request, pk):
                     urllib.request.urlopen(url, timeout=5) # ¡Línea descomentada para que funcione!
                 except Exception as e:
                     print(f"Error enviando notificación WhatsApp: {e}")
-            
+
             # Si usamos AJAX (JavaScript) respondemos JSON para no recargar
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({
@@ -173,10 +183,10 @@ def enviar_mensaje(request, pk):
                     'emisor': mensaje.emisor.username,
                     'timestamp': mensaje.timestamp.strftime('%H:%M')
                 })
-            
+
             # Si no es AJAX, recargamos la página
             return redirect('detalle_pedido', pk=pk)
-            
+
     return redirect('detalle_pedido', pk=pk)
 
 def cambiar_estado_pedido(request, pk, nuevo_estado):
@@ -185,12 +195,12 @@ def cambiar_estado_pedido(request, pk, nuevo_estado):
     """
     if not request.user.is_superuser:
         return redirect('home')
-    
+
     pedido = get_object_or_404(Pedido, pk=pk)
     if nuevo_estado in dict(Pedido.ESTADO_CHOICES):
         pedido.estado = nuevo_estado
         pedido.save()
-        
+
         # 1. Dejar registro automático en el chat (para que quede en el historial)
         MensajeChat.objects.create(
             pedido=pedido,
@@ -201,11 +211,24 @@ def cambiar_estado_pedido(request, pk, nuevo_estado):
         # 2. Enviar correo electrónico al cliente
         asunto = f"NerdGeek: Actualización de Pedido #{pedido.id}"
         mensaje = f"Hola {pedido.usuario.username},\n\nTu pedido ha cambiado de estado a: {pedido.get_estado_display()}.\n\nIngresa aquí para ver los detalles o chatear con nosotros:\n{request.build_absolute_uri(reverse('detalle_pedido', args=[pk]))}"
-        
+
         try:
             email = EmailMessage(asunto, mensaje, to=[pedido.usuario.email])
             email.send()
         except Exception as e:
             print(f"Error enviando notificación de correo: {e}")
-    
+
     return redirect('detalle_pedido', pk=pk)
+
+def galeria_ejemplos(request, tipo_producto):
+    # Primero buscamos el producto por su nombre
+    producto_obj = get_object_or_404(Producto, nombre=tipo_producto)
+
+    # Luego traemos todos los ejemplos asociados a ese producto
+    ejemplos = producto_obj.ejemplos.all()
+
+    context = {
+        'ejemplos': ejemplos,
+        'tipo': producto_obj.nombre
+    }
+    return render(request, 'tienda/galeria.html', context)

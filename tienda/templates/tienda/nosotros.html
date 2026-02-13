@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Nosotros - NerdGeek{% endblock %}
 
@@ -18,7 +19,7 @@
         <p>Utilizamos técnicas de sublimación y transfer de última generación para asegurar que tus diseños duren tanto como tu pasión.</p>
     </div>
     <div class="col-md-6 text-center">
-        <div class="p-5 bg-light rounded border">Aquí iría una foto del equipo o del taller</div>
+        <img src="{% static 'tienda/equipo.jpeg' %}" alt="Taller NerdGeek" class="img-fluid rounded shadow border">
     </div>
 </div>
 {% endblock %}
